@@ -1,9 +1,8 @@
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
-import kotlin.test.assertTrue
 
-class Tests {
+class BoardTests {
 
     @Test
     fun `new board has specified size`() {
@@ -37,15 +36,16 @@ class Tests {
 }
 
 typealias Board = List<List<Boolean>>
+
 val Board.width: Int get() = this[0].size
 val Board.height: Int get() = this.size
 fun Board.at(row: Int, col: Int): Boolean = this[row][col]
 fun Board.printed(): String =
-    (0 until height).map { row ->
-        (0 until width).map { col ->
+    (0 until height).joinToString("\n") { row ->
+        (0 until width).joinToString("") { col ->
             if (at(row, col)) "*" else "."
-        }.joinToString("")
-    }.joinToString("\n")
+        }
+    }
 
 fun boardOf(w: Int, h: Int): Board = (0 until h).map { (0 until w).map { false } }
 
