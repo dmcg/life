@@ -21,14 +21,13 @@ class Tests {
             }
         }
     }
-
 }
 
 typealias Board = List<List<Boolean>>
-val Board.width: Int get() = this.size
-val Board.height: Int get() = this[0].size
-fun Board.at(row: Int, col: Int): Boolean = this[col][row]
+val Board.width: Int get() = this[0].size
+val Board.height: Int get() = this.size
+fun Board.at(row: Int, col: Int): Boolean = this[row][col]
 
-fun boardOf(w: Int, h: Int): Board = (0 until w).map { (0 until h).map { false } }
+fun boardOf(w: Int, h: Int): Board = (0 until h).map { (0 until w).map { false } }
 
 
