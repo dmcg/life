@@ -7,19 +7,32 @@ class Tests {
 
     @Test
     fun `new board has specified size`() {
-        val board = boardOf(w = 2, h = 3)
+        val board = boardOf(w = 4, h = 3)
+        assertEquals(4, board.width)
         assertEquals(3, board.height)
-        assertEquals(2, board.width)
     }
 
     @Test
     fun `new board is empty`() {
-        val board = boardOf(w = 2, h = 3)
-        (0 until 2).forEach { col ->
+        val board = boardOf(w = 4, h = 3)
+        (0 until 4).forEach { col ->
             (0 until 3).forEach { row ->
                 assertFalse(board.at(row, col))
             }
         }
+    }
+
+    @Test
+    fun `render board`() {
+        val board = boardOf(w = 4, h = 3)
+        assertEquals(
+            """
+                ....
+                ....
+                ....
+            """.trimIndent(),
+            board.printed()
+        )
     }
 }
 
@@ -27,6 +40,12 @@ typealias Board = List<List<Boolean>>
 val Board.width: Int get() = this[0].size
 val Board.height: Int get() = this.size
 fun Board.at(row: Int, col: Int): Boolean = this[row][col]
+fun Board.printed(): String =
+    (0 until height).map { row ->
+        (0 until width).map { col ->
+            if (at(row, col)) "*" else "."
+        }.joinToString("")
+    }.joinToString("\n")
 
 fun boardOf(w: Int, h: Int): Board = (0 until h).map { (0 until w).map { false } }
 
