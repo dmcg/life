@@ -15,7 +15,7 @@ class BoardTests {
     fun `new board is empty`() {
         val board = boardOf(width = 4, height = 3)
         board.forEach { row, col ->
-            assertFalse(board.at(row, col))
+            assertFalse(board.isAliveAt(row, col))
         }
     }
 
@@ -74,12 +74,10 @@ typealias Board = List<List<Boolean>>
 
 val Board.width: Int get() = this[0].size
 val Board.height: Int get() = this.size
-fun Board.at(row: Int, col: Int): Boolean = this[row][col]
+fun Board.isAliveAt(row: Int, col: Int): Boolean = this[row][col]
 
 fun Board.liveNeighboursCount(row: Int, col: Int): Int =
-    listNeighbours(row, col).map { (row, col) ->
-        if (at(row, col)) 1 else 0
-    }.sum()
+    listNeighbours(row, col).count { (row, col) -> isAliveAt(row, col) }
 
 fun Board.listNeighbours(row: Int, col: Int): List<Pair<Int, Int>> =
     neighboursFor(row, col, width, height)
@@ -87,13 +85,13 @@ fun Board.listNeighbours(row: Int, col: Int): List<Pair<Int, Int>> =
 fun Board.printed(): String =
     (0 until height).joinToString("\n") { row ->
         (0 until width).joinToString("") { col ->
-            if (at(row, col)) "*" else "."
+            if (isAliveAt(row, col)) "*" else "."
         }
     }
 
 inline fun Board.forEach(f: (row: Int, col: Int) -> Unit) =
-    (0 until width).forEach { col ->
-        (0 until height).forEach { row ->
+    (0 until height).forEach { row ->
+        (0 until width).forEach { col ->
             f(row, col)
         }
     }
