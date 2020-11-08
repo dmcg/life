@@ -43,16 +43,6 @@ class BoardTests {
     }
 
     @Test
-    fun `list neighbours`() {
-        val board = boardOf(3, 3)
-        assertEquals(
-            listOf(2 to 2, 2 to 0, 2 to 1, 0 to 2, 0 to 1, 1 to 2, 1 to 0, 1 to 1),
-            board.listNeighbours(0, 0)
-        )
-        // TODO - doesn't work on boards smaller than 3 x 3
-    }
-
-    @Test
     fun `liveNeighboursCount 0`() {
         val board = boardOf(
             "...",
@@ -91,14 +81,8 @@ fun Board.liveNeighboursCount(row: Int, col: Int): Int =
         if (at(row, col)) 1 else 0
     }.sum()
 
-fun Board.rowPlus(row: Int, offset: Int) = if (row + offset < 0) height - 1 else (row + offset) % width
-fun Board.colPlus(col: Int, offset: Int) = if (col + offset < 0) width - 1 else (col + offset) % height
 fun Board.listNeighbours(row: Int, col: Int): List<Pair<Int, Int>> =
-    listOf(
-        rowPlus(row, -1) to colPlus(col, -1), rowPlus(row, -1) to colPlus(col, +0), rowPlus(row, -1) to colPlus(col, +1),
-        rowPlus(row, +0) to colPlus(col, -1), /*                                */  rowPlus(row, +0) to colPlus(col, +1),
-        rowPlus(row, +1) to colPlus(col, -1), rowPlus(row, +1) to colPlus(col, +0), rowPlus(row, +1) to colPlus(col, +1),
-    ).also(::println)
+    neighboursFor(row, col, width, height)
 
 fun Board.printed(): String =
     (0 until height).joinToString("\n") { row ->
