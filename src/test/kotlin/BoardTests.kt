@@ -6,14 +6,14 @@ class BoardTests {
 
     @Test
     fun `new board has specified size`() {
-        val board = boardOf(w = 4, h = 3)
+        val board = boardOf(width = 4, height = 3)
         assertEquals(4, board.width)
         assertEquals(3, board.height)
     }
 
     @Test
     fun `new board is empty`() {
-        val board = boardOf(w = 4, h = 3)
+        val board = boardOf(width = 4, height = 3)
         board.forEach { row, col ->
             assertFalse(board.at(row, col))
         }
@@ -21,7 +21,7 @@ class BoardTests {
 
     @Test
     fun `render board`() {
-        val board = boardOf(w = 4, h = 3)
+        val board = boardOf(width = 4, height = 3)
         assertEquals(
             """
                 ....
@@ -30,6 +30,16 @@ class BoardTests {
             """.trimIndent(),
             board.printed()
         )
+    }
+
+    @Test
+    fun `parse board`() {
+        val boardAsString = """
+            ...*
+            ...*
+            ....
+            """.trimIndent()
+        assertEquals(boardAsString, boardOf(boardAsString).printed())
     }
 
     @Test
@@ -43,29 +53,29 @@ class BoardTests {
     }
 
     @Test
-    fun `liveNeigboursCount 0`() {
-        val board = listOf(
-            listOf(false, false, false),
-            listOf(false, false, false),
-            listOf(false, false, false)
+    fun `liveNeighboursCount 0`() {
+        val board = boardOf(
+            "...",
+            "...",
+            "...",
         )
         board.forEach { row, col ->
-            assertEquals(0, board.liveNeigboursCount(row, col))
+            assertEquals(0, board.liveNeighboursCount(row, col))
         }
     }
 
     @Test
-    fun `liveNeigboursCount 1`() {
-        val board = listOf(
-            listOf(false, false, false),
-            listOf(false, true, false),
-            listOf(false, false, false)
+    fun `liveNeighboursCount 1`() {
+        val board = boardOf(
+            "...",
+            ".*.",
+            "...",
         )
         board.forEach { row, col ->
             if (row == 1 && col == 1)
-                assertEquals(0, board.liveNeigboursCount(row, col), "at $row $col")
+                assertEquals(0, board.liveNeighboursCount(row, col), "at $row $col")
             else
-                assertEquals(1, board.liveNeigboursCount(row, col), "at $row $col")
+                assertEquals(1, board.liveNeighboursCount(row, col), "at $row $col")
         }
     }
 }
@@ -76,7 +86,7 @@ val Board.width: Int get() = this[0].size
 val Board.height: Int get() = this.size
 fun Board.at(row: Int, col: Int): Boolean = this[row][col]
 
-fun Board.liveNeigboursCount(row: Int, col: Int): Int =
+fun Board.liveNeighboursCount(row: Int, col: Int): Int =
     listNeighbours(row, col).map { (row, col) ->
         if (at(row, col)) 1 else 0
     }.sum()
@@ -104,6 +114,18 @@ inline fun Board.forEach(f: (row: Int, col: Int) -> Unit) =
         }
     }
 
-fun boardOf(w: Int, h: Int): Board = (0 until h).map { (0 until w).map { false } }
+fun boardOf(width: Int, height: Int): Board = (0 until height).map { (0 until width).map { false } }
+
+fun boardOf(s: String): Board = boardOf(s.lines())
+fun boardOf(vararg lines: String) = boardOf(lines.toList())
+fun boardOf(lines: List<String>): List<List<Boolean>> {
+    val width = lines[0].length
+    val height = lines.size
+    return (0 until height).map { row ->
+        (0 until width).map { col ->
+            (lines[row][col] == '*')
+        }
+    }
+}
 
 
